@@ -43,10 +43,15 @@ func (dts *debtTransactionServer) RecordNewTransaction(ctx context.Context, req 
 		return nil, err
 	}
 
+	action, err := mapper.FromProtoTransactionAction(req.GetAction())
+	if err != nil {
+		return nil, err
+	}
+
 	request := dto.NewDebtTransactionRequest{
 		UserProfileID:    userProfileID,
 		FriendProfileID:  friendProfileID,
-		Action:           mapper.FromProtoTransactionAction(req.GetAction()),
+		Action:           action,
 		Amount:           ezutil.MoneyToDecimal(req.GetAmount()),
 		TransferMethodID: transferMethodID,
 		Description:      req.GetDescription(),
@@ -61,8 +66,13 @@ func (dts *debtTransactionServer) RecordNewTransaction(ctx context.Context, req 
 		return nil, err
 	}
 
+	transaction, err := mapper.ToTransactionProto(response)
+	if err != nil {
+		return nil, err
+	}
+
 	return &debt.RecordNewTransactionResponse{
-		Transaction: mapper.ToTransactionProto(response),
+		Transaction: transaction,
 	}, nil
 }
 
@@ -77,8 +87,13 @@ func (dts *debtTransactionServer) GetTransactions(ctx context.Context, req *debt
 		return nil, err
 	}
 
+	transactions, err := ezutil.MapSliceWithError(responses, mapper.ToTransactionProto)
+	if err != nil {
+		return nil, err
+	}
+
 	return &debt.GetTransactionsResponse{
-		Transactions: ezutil.MapSlice(responses, mapper.ToTransactionProto),
+		Transactions: transactions,
 	}, nil
 }
 
@@ -157,7 +172,12 @@ func (dts *debtTransactionServer) GetAllByProfileIds(ctx context.Context, req *d
 		return nil, err
 	}
 
+	responses, err := ezutil.MapSliceWithError(transactions, mapper.ToTransactionProto)
+	if err != nil {
+		return nil, err
+	}
+
 	return &debt.GetAllByProfileIdsResponse{
-		Transactions: ezutil.MapSlice(transactions, mapper.ToTransactionProto),
+		Transactions: responses,
 	}, nil
 }
