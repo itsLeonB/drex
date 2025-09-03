@@ -6,14 +6,14 @@ import (
 )
 
 type GroupExpenseData struct {
-	ID               uuid.UUID
-	PayerProfileID   uuid.UUID
-	CreatorProfileID uuid.UUID
+	ID               uuid.UUID `validate:"required"`
+	PayerProfileID   uuid.UUID `validate:"required"`
+	CreatorProfileID uuid.UUID `validate:"required"`
 	Description      string
-	Participants     []ExpenseParticipantData
+	Participants     []ExpenseParticipantData `validate:"required,min=1"`
 }
 
 type ExpenseParticipantData struct {
-	ProfileID   uuid.UUID
-	ShareAmount decimal.Decimal
+	ProfileID   uuid.UUID       `validate:"required"`
+	ShareAmount decimal.Decimal `validate:"required"`
 }

@@ -55,3 +55,9 @@ func GroupExpenseToDebtTransactions(groupExpense dto.GroupExpenseData, transferM
 
 	return debtTransactions
 }
+
+func GetDebtTransactionSimpleMapper(userProfileID uuid.UUID) func(entity.DebtTransaction) dto.DebtTransactionResponse {
+	return func(transaction entity.DebtTransaction) dto.DebtTransactionResponse {
+		return DebtTransactionToResponse(userProfileID, transaction)
+	}
+}

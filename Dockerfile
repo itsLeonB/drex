@@ -7,16 +7,16 @@ RUN go mod download
 
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -buildvcs=false -ldflags='-w -s' \
-    -o /billsplittr ./cmd/api/main.go
+    -o /drex ./cmd/grpc/main.go
 
 FROM gcr.io/distroless/static-debian12 AS build-release-stage
 
 WORKDIR /
 
-COPY --from=build-stage /billsplittr /billsplittr
+COPY --from=build-stage /drex /drex
 
 EXPOSE 8080
 
 USER nonroot:nonroot
 
-ENTRYPOINT ["/billsplittr"]
+ENTRYPOINT ["/drex"]

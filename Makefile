@@ -1,18 +1,15 @@
-.PHONY: help api-hotreload lint test test-verbose test-coverage test-coverage-html test-clean
+.PHONY: all clean grpc grpc-hot lint test test-verbose test-coverage test-coverage-html test-clean security
 
-help:
-	@echo "Available commands:"
-	@echo "  help               - Show this help message"
-	@echo "  api-hotreload      - Run the backend API with hot-reload, make sure you installed `air`"
-	@echo "  lint               - Run golangci-lint on the codebase"
-	@echo "  test               - Run all tests"
-	@echo "  test-verbose       - Run all tests with verbose output"
-	@echo "  test-coverage      - Run all tests with coverage report"
-	@echo "  test-coverage-html - Run all tests and generate HTML coverage report"
-	@echo "  test-clean         - Clean test cache and run tests"
+clean:
+	@echo "🧹 Cleaning generated files..."
+	@rm -rf $(OUT_DIR)
 
-api-hotreload:
-	air --build.cmd "go build -o bin/api cmd/api/main.go" --build.bin "./bin/api"
+grpc:
+	go run cmd/grpc/main.go
+
+grpc-hot:
+	@echo "🚀 Starting gRPC server with hot reload..."
+	air --build.cmd "go build -o bin/grpc cmd/grpc/main.go" --build.bin "./bin/grpc"
 
 lint:
 	golangci-lint run ./...
@@ -38,3 +35,6 @@ test-coverage-html:
 test-clean:
 	@echo "Cleaning test cache and running tests..."
 	go clean -testcache && go test -v ./internal/tests/...
+
+security:
+	gosec -fmt sarif -out results.sarif -exclude-dir=gen ./... || true

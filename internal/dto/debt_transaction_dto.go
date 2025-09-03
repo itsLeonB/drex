@@ -9,7 +9,7 @@ import (
 )
 
 type NewDebtTransactionRequest struct {
-	UserProfileID    uuid.UUID
+	UserProfileID    uuid.UUID                         `validate:"required"`
 	FriendProfileID  uuid.UUID                         `validate:"required"`
 	Action           appconstant.DebtTransactionAction `validate:"oneof=LEND BORROW RECEIVE RETURN"`
 	Amount           decimal.Decimal                   `validate:"required"`

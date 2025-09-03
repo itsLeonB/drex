@@ -23,10 +23,7 @@ func NewDebtTransactionRepository(db *gorm.DB) DebtTransactionRepository {
 	}
 }
 
-func (dtr *debtTransactionRepositoryGorm) FindAllByProfileID(
-	ctx context.Context,
-	userProfileID, friendProfileID uuid.UUID,
-) ([]entity.DebtTransaction, error) {
+func (dtr *debtTransactionRepositoryGorm) FindAllByProfileIDs(ctx context.Context, userProfileID, friendProfileID uuid.UUID) ([]entity.DebtTransaction, error) {
 	var transactions []entity.DebtTransaction
 
 	db, err := dtr.GetGormInstance(ctx)

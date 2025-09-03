@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/itsLeonB/drex/internal/appconstant"
 	"github.com/itsLeonB/drex/internal/dto"
-	"github.com/itsLeonB/drex/internal/entity"
 	"github.com/itsLeonB/drex/internal/mapper"
 	"github.com/itsLeonB/drex/internal/repository"
 	"github.com/itsLeonB/drex/internal/service/debt"
@@ -45,12 +44,12 @@ func (ds *debtTransactionServiceImpl) RecordNew(ctx context.Context, request dto
 		return dto.DebtTransactionResponse{}, err
 	}
 
-	if err = ds.Validate(ctx, request); err != nil {
-		return dto.DebtTransactionResponse{}, err
+	if request.Amount.Compare(decimal.Zero) < 1 {
+		return dto.DebtTransactionResponse{}, ungerr.ValidationError("amount must be greater than 0")
 	}
 
 	err = ds.transactor.WithinTransaction(ctx, func(ctx context.Context) error {
-		debtTransactions, err := ds.debtTransactionRepository.FindAllByProfileID(ctx, request.UserProfileID, request.FriendProfileID)
+		debtTransactions, err := ds.debtTransactionRepository.FindAllByProfileIDs(ctx, request.UserProfileID, request.FriendProfileID)
 		if err != nil {
 			return err
 		}
@@ -91,11 +90,7 @@ func (ds *debtTransactionServiceImpl) GetAll(ctx context.Context, profileID uuid
 		return nil, err
 	}
 
-	mapFunc := func(transaction entity.DebtTransaction) dto.DebtTransactionResponse {
-		return mapper.DebtTransactionToResponse(profileID, transaction)
-	}
-
-	return ezutil.MapSlice(transactions, mapFunc), nil
+	return ezutil.MapSlice(transactions, mapper.GetDebtTransactionSimpleMapper(profileID)), nil
 }
 
 func (ds *debtTransactionServiceImpl) ProcessConfirmedGroupExpense(ctx context.Context, groupExpense dto.GroupExpenseData) error {
@@ -111,12 +106,13 @@ func (ds *debtTransactionServiceImpl) ProcessConfirmedGroupExpense(ctx context.C
 	return err
 }
 
-func (ds *debtTransactionServiceImpl) Validate(ctx context.Context, req dto.NewDebtTransactionRequest) error {
-	if req.Amount.Compare(decimal.Zero) < 1 {
-		return ungerr.ValidationError("amount must be greater than 0")
+func (ds *debtTransactionServiceImpl) FindAllByProfileIDs(ctx context.Context, userProfileID, friendProfileID uuid.UUID) ([]dto.DebtTransactionResponse, error) {
+	transactions, err := ds.debtTransactionRepository.FindAllByProfileIDs(ctx, userProfileID, friendProfileID)
+	if err != nil {
+		return nil, err
 	}
 
-	return nil
+	return ezutil.MapSlice(transactions, mapper.GetDebtTransactionSimpleMapper(userProfileID)), nil
 }
 
 func (ds *debtTransactionServiceImpl) selectAnonCalculator(action appconstant.DebtTransactionAction) (debt.AnonymousDebtCalculator, error) {

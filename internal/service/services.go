@@ -12,6 +12,7 @@ type DebtTransactionService interface {
 	RecordNew(ctx context.Context, request dto.NewDebtTransactionRequest) (dto.DebtTransactionResponse, error)
 	GetAll(ctx context.Context, userProfileID uuid.UUID) ([]dto.DebtTransactionResponse, error)
 	ProcessConfirmedGroupExpense(ctx context.Context, groupExpense dto.GroupExpenseData) error
+	FindAllByProfileIDs(ctx context.Context, userProfileID, friendProfileID uuid.UUID) ([]dto.DebtTransactionResponse, error)
 }
 
 type TransferMethodService interface {
