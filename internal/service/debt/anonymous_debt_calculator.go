@@ -1,14 +1,12 @@
 package debt
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/itsLeonB/drex/internal/appconstant"
 	"github.com/itsLeonB/drex/internal/dto"
 	"github.com/itsLeonB/drex/internal/entity"
 )
-
-const namespace = "[AnonymousDebtCalculator]"
 
 type AnonymousDebtCalculator interface {
 	GetAction() appconstant.DebtTransactionAction
@@ -29,17 +27,17 @@ func NewAnonymousDebtCalculatorStrategies() map[appconstant.DebtTransactionActio
 
 	for _, initFunc := range initFuncs {
 		if initFunc == nil {
-			log.Fatalf("%s initFunc is nil", namespace)
+			panic("initFunc is nil")
 		}
 
 		calculator := initFunc()
 		if calculator == nil {
-			log.Fatalf("%s calculator is nil", namespace)
+			panic("calculator is nil")
 		}
 
 		action := calculator.GetAction()
 		if _, exists := strategyMap[action]; exists {
-			log.Fatalf("%s duplicate calculator for action: %v", namespace, action)
+			panic(fmt.Sprintf("duplicate calculator for action: %s", action))
 		}
 
 		strategyMap[calculator.GetAction()] = calculator

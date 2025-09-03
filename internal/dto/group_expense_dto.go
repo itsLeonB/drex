@@ -10,7 +10,7 @@ type GroupExpenseData struct {
 	PayerProfileID   uuid.UUID `validate:"required"`
 	CreatorProfileID uuid.UUID `validate:"required"`
 	Description      string
-	Participants     []ExpenseParticipantData `validate:"required,min=1"`
+	Participants     []ExpenseParticipantData `validate:"required,min=1,dive"`
 }
 
 type ExpenseParticipantData struct {

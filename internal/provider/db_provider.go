@@ -22,10 +22,12 @@ func ProvideDBs(dbConfig config.DB) *DBs {
 
 func (d *DBs) Shutdown() error {
 	db, err := d.GormDB.DB()
+	if db == nil {
+		return nil
+	}
 	if err != nil {
 		return err
 	}
-
 	return db.Close()
 }
 
