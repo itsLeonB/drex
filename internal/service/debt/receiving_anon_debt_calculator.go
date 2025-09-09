@@ -52,19 +52,23 @@ func (dc *receivingAnonDebtCalculator) MapEntityToResponse(debtTransaction entit
 }
 
 func (dc *receivingAnonDebtCalculator) Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error {
-	userAmount, friendAmount := helper.GetAmountSumsFromDebtTransactions(
+	_, friendOwes := helper.GetDebtAmounts(
 		newTransaction.LenderProfileID,
 		newTransaction.BorrowerProfileID,
 		allTransactions,
 	)
 
-	toReceiveLeftAmount := friendAmount.Sub(userAmount)
+	// For RECEIVE action, we only care about how much the friend owes to the user
+	// The user can only receive up to what the friend owes them
+	if friendOwes.IsZero() {
+		return ungerr.ValidationError("cannot receive debt, friend doesn't owe you any money")
+	}
 
-	if toReceiveLeftAmount.Compare(newTransaction.Amount) < 0 {
+	if newTransaction.Amount.GreaterThan(friendOwes) {
 		return ungerr.ValidationError(fmt.Sprintf(
-			"cannot receive debt, amount in user: %s, amount in friend: %s",
-			userAmount,
-			friendAmount,
+			"cannot receive debt, you can only receive up to %s (friend currently owes you %s)",
+			friendOwes.String(),
+			friendOwes.String(),
 		))
 	}
 

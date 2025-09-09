@@ -52,19 +52,23 @@ func (dc *returningAnonDebtCalculator) MapEntityToResponse(debtTransaction entit
 }
 
 func (dc *returningAnonDebtCalculator) Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error {
-	userAmount, friendAmount := helper.GetAmountSumsFromDebtTransactions(
+	userOwes, _ := helper.GetDebtAmounts(
 		newTransaction.BorrowerProfileID,
 		newTransaction.LenderProfileID,
 		allTransactions,
 	)
 
-	toReturnLeftAmount := userAmount.Sub(friendAmount)
+	// For RETURN action, we only care about how much the user owes
+	// The user can only return up to what they owe
+	if userOwes.IsZero() {
+		return ungerr.ValidationError("cannot return debt, you don't owe any money")
+	}
 
-	if toReturnLeftAmount.Compare(newTransaction.Amount) < 0 {
+	if newTransaction.Amount.GreaterThan(userOwes) {
 		return ungerr.ValidationError(fmt.Sprintf(
-			"cannot return debt, amount in user: %s, amount in friend: %s",
-			userAmount,
-			friendAmount,
+			"cannot return debt, you can only return up to %s (you currently owe %s)",
+			userOwes.String(),
+			userOwes.String(),
 		))
 	}
 

@@ -7,33 +7,36 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func GetAmountSumsFromDebtTransactions(
-	userProfileID, friendProfileID uuid.UUID,
-	transactions []entity.DebtTransaction,
-) (decimal.Decimal, decimal.Decimal) {
-	userAmount, friendAmount := decimal.Zero, decimal.Zero
+func GetDebtAmounts(userProfileID, friendProfileID uuid.UUID, transactions []entity.DebtTransaction) (userOwes, friendOwes decimal.Decimal) {
+	userOwes, friendOwes = decimal.Zero, decimal.Zero
 
 	for _, transaction := range transactions {
 		if transaction.LenderProfileID == userProfileID && transaction.BorrowerProfileID == friendProfileID {
+			// User lent money to friend
 			switch transaction.Type {
 			case appconstant.Lend:
-				friendAmount = friendAmount.Add(transaction.Amount)
-				userAmount = userAmount.Sub(transaction.Amount)
+				friendOwes = friendOwes.Add(transaction.Amount) // Friend owes more
 			case appconstant.Repay:
-				friendAmount = friendAmount.Sub(transaction.Amount)
-				userAmount = userAmount.Add(transaction.Amount)
+				friendOwes = friendOwes.Sub(transaction.Amount) // Friend owes less
 			}
 		} else if transaction.LenderProfileID == friendProfileID && transaction.BorrowerProfileID == userProfileID {
+			// Friend lent money to user
 			switch transaction.Type {
 			case appconstant.Lend:
-				userAmount = userAmount.Add(transaction.Amount)
-				friendAmount = friendAmount.Sub(transaction.Amount)
+				userOwes = userOwes.Add(transaction.Amount) // User owes more
 			case appconstant.Repay:
-				userAmount = userAmount.Sub(transaction.Amount)
-				friendAmount = friendAmount.Add(transaction.Amount)
+				userOwes = userOwes.Sub(transaction.Amount) // User owes less
 			}
 		}
 	}
 
-	return userAmount, friendAmount
+	// Ensure no negative debts
+	if userOwes.IsNegative() {
+		userOwes = decimal.Zero
+	}
+	if friendOwes.IsNegative() {
+		friendOwes = decimal.Zero
+	}
+
+	return userOwes, friendOwes
 }
