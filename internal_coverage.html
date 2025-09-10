@@ -1,0 +1,1468 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>config: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/itsLeonB/drex/internal/config/config.go (0.0%)</option>
+				
+				<option value="file1">github.com/itsLeonB/drex/internal/delivery/grpc/mapper/debt_transaction_mapper.go (0.0%)</option>
+				
+				<option value="file2">github.com/itsLeonB/drex/internal/delivery/grpc/server.go (0.0%)</option>
+				
+				<option value="file3">github.com/itsLeonB/drex/internal/delivery/grpc/server/debt_transaction_server.go (0.0%)</option>
+				
+				<option value="file4">github.com/itsLeonB/drex/internal/delivery/grpc/server/servers.go (0.0%)</option>
+				
+				<option value="file5">github.com/itsLeonB/drex/internal/delivery/grpc/server/transfer_method_server.go (0.0%)</option>
+				
+				<option value="file6">github.com/itsLeonB/drex/internal/helper/debt_transaction_helper.go (0.0%)</option>
+				
+				<option value="file7">github.com/itsLeonB/drex/internal/mapper/debt_transaction_mapper.go (0.0%)</option>
+				
+				<option value="file8">github.com/itsLeonB/drex/internal/mapper/transfer_method_mapper.go (0.0%)</option>
+				
+				<option value="file9">github.com/itsLeonB/drex/internal/provider/db_provider.go (0.0%)</option>
+				
+				<option value="file10">github.com/itsLeonB/drex/internal/provider/logger_provider.go (0.0%)</option>
+				
+				<option value="file11">github.com/itsLeonB/drex/internal/provider/provider.go (0.0%)</option>
+				
+				<option value="file12">github.com/itsLeonB/drex/internal/provider/repository_provider.go (0.0%)</option>
+				
+				<option value="file13">github.com/itsLeonB/drex/internal/provider/service_provider.go (0.0%)</option>
+				
+				<option value="file14">github.com/itsLeonB/drex/internal/repository/debt_transaction_repository.go (0.0%)</option>
+				
+				<option value="file15">github.com/itsLeonB/drex/internal/service/debt/anonymous_debt_calculator.go (0.0%)</option>
+				
+				<option value="file16">github.com/itsLeonB/drex/internal/service/debt/borrowing_anon_debt_calculator.go (0.0%)</option>
+				
+				<option value="file17">github.com/itsLeonB/drex/internal/service/debt/lending_anon_debt_calculator.go (0.0%)</option>
+				
+				<option value="file18">github.com/itsLeonB/drex/internal/service/debt/receiving_anon_debt_calculator.go (0.0%)</option>
+				
+				<option value="file19">github.com/itsLeonB/drex/internal/service/debt/returning_anon_debt_calculator.go (0.0%)</option>
+				
+				<option value="file20">github.com/itsLeonB/drex/internal/service/debt_transaction_service.go (0.0%)</option>
+				
+				<option value="file21">github.com/itsLeonB/drex/internal/service/transfer_method_service.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package config
+
+import (
+        "time"
+
+        "github.com/kelseyhightower/envconfig"
+)
+
+type Config struct {
+        App
+        DB
+}
+
+type App struct {
+        Name    string        `default:"Drex"`
+        Env     string        `default:"debug"`
+        Port    string        `default:"50051"`
+        Timeout time.Duration `default:"10s"`
+}
+
+func Load() Config <span class="cov0" title="0">{
+        var app App
+        envconfig.MustProcess("APP", &amp;app)
+
+        var db DB
+        envconfig.MustProcess("DB", &amp;db)
+
+        return Config{
+                App: app,
+                DB:  db,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package mapper
+
+import (
+        "github.com/itsLeonB/drex-protos/gen/go/debt/v1"
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/ezutil/v2"
+        "github.com/itsLeonB/gerpc"
+        "github.com/rotisserie/eris"
+        "golang.org/x/text/currency"
+)
+
+func FromProtoTransactionAction(ta debt.TransactionAction) (appconstant.DebtTransactionAction, error) <span class="cov0" title="0">{
+        switch ta </span>{
+        case debt.TransactionAction_TRANSACTION_ACTION_BORROW:<span class="cov0" title="0">
+                return appconstant.BorrowAction, nil</span>
+        case debt.TransactionAction_TRANSACTION_ACTION_LEND:<span class="cov0" title="0">
+                return appconstant.LendAction, nil</span>
+        case debt.TransactionAction_TRANSACTION_ACTION_RECEIVE:<span class="cov0" title="0">
+                return appconstant.ReceiveAction, nil</span>
+        case debt.TransactionAction_TRANSACTION_ACTION_RETURN:<span class="cov0" title="0">
+                return appconstant.ReturnAction, nil</span>
+        default:<span class="cov0" title="0">
+                return "", eris.Errorf("undefined TransactionAction enum: %s", ta)</span>
+        }
+}
+
+func ToProtoTransactionAction(ta appconstant.DebtTransactionAction) (debt.TransactionAction, error) <span class="cov0" title="0">{
+        switch ta </span>{
+        case appconstant.BorrowAction:<span class="cov0" title="0">
+                return debt.TransactionAction_TRANSACTION_ACTION_BORROW, nil</span>
+        case appconstant.LendAction:<span class="cov0" title="0">
+                return debt.TransactionAction_TRANSACTION_ACTION_LEND, nil</span>
+        case appconstant.ReceiveAction:<span class="cov0" title="0">
+                return debt.TransactionAction_TRANSACTION_ACTION_RECEIVE, nil</span>
+        case appconstant.ReturnAction:<span class="cov0" title="0">
+                return debt.TransactionAction_TRANSACTION_ACTION_RETURN, nil</span>
+        default:<span class="cov0" title="0">
+                return debt.TransactionAction_TRANSACTION_ACTION_UNSPECIFIED, eris.Errorf("undefined TransactionAction constant: %s", ta)</span>
+        }
+}
+
+func ToProtoTransactionType(tt appconstant.DebtTransactionType) (debt.TransactionType, error) <span class="cov0" title="0">{
+        switch tt </span>{
+        case appconstant.Lend:<span class="cov0" title="0">
+                return debt.TransactionType_TRANSACTION_TYPE_LEND, nil</span>
+        case appconstant.Repay:<span class="cov0" title="0">
+                return debt.TransactionType_TRANSACTION_TYPE_REPAY, nil</span>
+        default:<span class="cov0" title="0">
+                return debt.TransactionType_TRANSACTION_TYPE_UNSPECIFIED, eris.Errorf("undefined TransactionType constant: %s", tt)</span>
+        }
+}
+
+func ToTransactionProto(debtTrx dto.DebtTransactionResponse) (*debt.TransactionResponse, error) <span class="cov0" title="0">{
+        trxType, err := ToProtoTransactionType(debtTrx.Type)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">trxAction, err := ToProtoTransactionAction(debtTrx.Action)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;debt.TransactionResponse{
+                Id:             debtTrx.ID.String(),
+                ProfileId:      debtTrx.ProfileID.String(),
+                Type:           trxType,
+                Action:         trxAction,
+                Amount:         ezutil.DecimalToMoneyRounded(debtTrx.Amount, currency.IDR.String()),
+                TransferMethod: debtTrx.TransferMethod,
+                Description:    debtTrx.Description,
+                CreatedAt:      gerpc.NullableTimeToProto(debtTrx.CreatedAt),
+                UpdatedAt:      gerpc.NullableTimeToProto(debtTrx.UpdatedAt),
+                DeletedAt:      gerpc.NullableTimeToProto(debtTrx.DeletedAt),
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package grpc
+
+import (
+        "github.com/itsLeonB/drex/internal/config"
+        "github.com/itsLeonB/drex/internal/delivery/grpc/server"
+        "github.com/itsLeonB/drex/internal/provider"
+        "github.com/itsLeonB/gerpc"
+        "google.golang.org/grpc"
+)
+
+func Setup(configs config.Config) *gerpc.GrpcServer <span class="cov0" title="0">{
+        providers := provider.All(configs)
+        servers := server.ProvideServers(providers.Services)
+
+        // Middlewares/Interceptors
+        opts := []grpc.ServerOption{
+                grpc.ChainUnaryInterceptor(
+                        gerpc.NewLoggingInterceptor(providers.Logger),
+                        gerpc.NewErrorInterceptor(providers.Logger),
+                ),
+        }
+
+        return gerpc.NewGrpcServer().
+                WithLogger(providers.Logger).
+                WithAddress(":" + configs.App.Port).
+                WithOpts(opts...).
+                WithRegisterSrvFunc(servers.Register).
+                WithShutdownFunc(providers.Shutdown)
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package server
+
+import (
+        "context"
+
+        "github.com/go-playground/validator/v10"
+        "github.com/google/uuid"
+        "github.com/itsLeonB/drex-protos/gen/go/debt/v1"
+        "github.com/itsLeonB/drex/internal/delivery/grpc/mapper"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/service"
+        "github.com/itsLeonB/ezutil/v2"
+        "github.com/itsLeonB/ungerr"
+        "google.golang.org/protobuf/types/known/emptypb"
+)
+
+type debtTransactionServer struct {
+        debt.UnimplementedDebtServiceServer
+        validate           *validator.Validate
+        debtTransactionSvc service.DebtTransactionService
+}
+
+func newDebtTransactionServer(validate *validator.Validate, debtTransactionSvc service.DebtTransactionService) debt.DebtServiceServer <span class="cov0" title="0">{
+        return &amp;debtTransactionServer{
+                validate:           validate,
+                debtTransactionSvc: debtTransactionSvc,
+        }
+}</span>
+
+func (dts *debtTransactionServer) RecordNewTransaction(ctx context.Context, req *debt.RecordNewTransactionRequest) (*debt.RecordNewTransactionResponse, error) <span class="cov0" title="0">{
+        userProfileID, err := ezutil.Parse[uuid.UUID](req.GetUserProfileId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">friendProfileID, err := ezutil.Parse[uuid.UUID](req.GetFriendProfileId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">transferMethodID, err := ezutil.Parse[uuid.UUID](req.GetTransferMethodId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">action, err := mapper.FromProtoTransactionAction(req.GetAction())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">request := dto.NewDebtTransactionRequest{
+                UserProfileID:    userProfileID,
+                FriendProfileID:  friendProfileID,
+                Action:           action,
+                Amount:           ezutil.MoneyToDecimal(req.GetAmount()),
+                TransferMethodID: transferMethodID,
+                Description:      req.GetDescription(),
+        }
+
+        if err = dts.validate.Struct(request); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">response, err := dts.debtTransactionSvc.RecordNew(ctx, request)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">transaction, err := mapper.ToTransactionProto(response)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;debt.RecordNewTransactionResponse{
+                Transaction: transaction,
+        }, nil</span>
+}
+
+func (dts *debtTransactionServer) GetTransactions(ctx context.Context, req *debt.GetTransactionsRequest) (*debt.GetTransactionsResponse, error) <span class="cov0" title="0">{
+        userProfileID, err := ezutil.Parse[uuid.UUID](req.GetUserProfileId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">responses, err := dts.debtTransactionSvc.GetAll(ctx, userProfileID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">transactions, err := ezutil.MapSliceWithError(responses, mapper.ToTransactionProto)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;debt.GetTransactionsResponse{
+                Transactions: transactions,
+        }, nil</span>
+}
+
+func (dts *debtTransactionServer) ProcessConfirmedGroupExpense(ctx context.Context, req *debt.ProcessConfirmedGroupExpenseRequest) (*emptypb.Empty, error) <span class="cov0" title="0">{
+        groupExpense := req.GetGroupExpense()
+        if groupExpense == nil </span><span class="cov0" title="0">{
+                return nil, ungerr.BadRequestError("groupExpense is nil")
+        }</span>
+
+        <span class="cov0" title="0">id, err := ezutil.Parse[uuid.UUID](groupExpense.GetId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">payerProfileID, err := ezutil.Parse[uuid.UUID](groupExpense.GetPayerProfileId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">creatorProfileID, err := ezutil.Parse[uuid.UUID](groupExpense.GetCreatorProfileId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">mapFunc := func(participant *debt.ExpenseParticipantData) (dto.ExpenseParticipantData, error) </span><span class="cov0" title="0">{
+                if participant == nil </span><span class="cov0" title="0">{
+                        return dto.ExpenseParticipantData{}, ungerr.BadRequestError("expense participant is nil")
+                }</span>
+
+                <span class="cov0" title="0">profileID, err := ezutil.Parse[uuid.UUID](participant.GetProfileId())
+                if err != nil </span><span class="cov0" title="0">{
+                        return dto.ExpenseParticipantData{}, err
+                }</span>
+
+                <span class="cov0" title="0">return dto.ExpenseParticipantData{
+                        ProfileID:   profileID,
+                        ShareAmount: ezutil.MoneyToDecimal(participant.GetShareAmount()),
+                }, nil</span>
+        }
+
+        <span class="cov0" title="0">participants, err := ezutil.MapSliceWithError(groupExpense.GetParticipants(), mapFunc)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">request := dto.GroupExpenseData{
+                ID:               id,
+                PayerProfileID:   payerProfileID,
+                CreatorProfileID: creatorProfileID,
+                Description:      groupExpense.GetDescription(),
+                Participants:     participants,
+        }
+
+        if err = dts.validate.Struct(request); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">err = dts.debtTransactionSvc.ProcessConfirmedGroupExpense(ctx, request)
+
+        return nil, err</span>
+}
+
+func (dts *debtTransactionServer) GetAllByProfileIds(ctx context.Context, req *debt.GetAllByProfileIdsRequest) (*debt.GetAllByProfileIdsResponse, error) <span class="cov0" title="0">{
+        userProfileID, err := ezutil.Parse[uuid.UUID](req.GetUserProfileId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">friendProfileID, err := ezutil.Parse[uuid.UUID](req.GetFriendProfileId())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">transactions, err := dts.debtTransactionSvc.FindAllByProfileIDs(ctx, userProfileID, friendProfileID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">responses, err := ezutil.MapSliceWithError(transactions, mapper.ToTransactionProto)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;debt.GetAllByProfileIdsResponse{
+                Transactions: responses,
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package server
+
+import (
+        "github.com/go-playground/validator/v10"
+        "github.com/itsLeonB/drex-protos/gen/go/debt/v1"
+        "github.com/itsLeonB/drex-protos/gen/go/transaction/v1"
+        "github.com/itsLeonB/drex/internal/provider"
+        "github.com/rotisserie/eris"
+        "google.golang.org/grpc"
+)
+
+type Servers struct {
+        TransferMethod  transaction.TransferMethodServiceServer
+        DebtTransaction debt.DebtServiceServer
+}
+
+func ProvideServers(services *provider.Services) *Servers <span class="cov0" title="0">{
+        validate := validator.New()
+
+        return &amp;Servers{
+                TransferMethod:  newTransferMethodServer(services.TransferMethod),
+                DebtTransaction: newDebtTransactionServer(validate, services.DebtTransaction),
+        }
+}</span>
+
+func (s *Servers) Register(grpcServer *grpc.Server) error <span class="cov0" title="0">{
+        if s.TransferMethod == nil </span><span class="cov0" title="0">{
+                return eris.New("transfer method server is nil")
+        }</span>
+        <span class="cov0" title="0">if s.DebtTransaction == nil </span><span class="cov0" title="0">{
+                return eris.New("debt transaction server is nil")
+        }</span>
+
+        <span class="cov0" title="0">transaction.RegisterTransferMethodServiceServer(grpcServer, s.TransferMethod)
+        debt.RegisterDebtServiceServer(grpcServer, s.DebtTransaction)
+
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package server
+
+import (
+        "context"
+
+        "github.com/itsLeonB/drex-protos/gen/go/transaction/v1"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/service"
+        "github.com/itsLeonB/ezutil/v2"
+        "github.com/itsLeonB/gerpc"
+        "google.golang.org/protobuf/types/known/emptypb"
+)
+
+type transferMethodServer struct {
+        transaction.UnimplementedTransferMethodServiceServer
+        transferMethodSvc service.TransferMethodService
+}
+
+func newTransferMethodServer(transferMethodSvc service.TransferMethodService) transaction.TransferMethodServiceServer <span class="cov0" title="0">{
+        return &amp;transferMethodServer{transferMethodSvc: transferMethodSvc}
+}</span>
+
+func (tms *transferMethodServer) GetAll(ctx context.Context, _ *emptypb.Empty) (*transaction.GetAllResponse, error) <span class="cov0" title="0">{
+        response, err := tms.transferMethodSvc.GetAll(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">mapFunc := func(resp dto.TransferMethodResponse) *transaction.TransferMethodResponse </span><span class="cov0" title="0">{
+                return &amp;transaction.TransferMethodResponse{
+                        Id:        resp.ID.String(),
+                        Name:      resp.Name,
+                        Display:   resp.Display,
+                        CreatedAt: gerpc.NullableTimeToProto(resp.CreatedAt),
+                        UpdatedAt: gerpc.NullableTimeToProto(resp.UpdatedAt),
+                        DeletedAt: gerpc.NullableTimeToProto(resp.DeletedAt),
+                }
+        }</span>
+
+        <span class="cov0" title="0">return &amp;transaction.GetAllResponse{TransferMethods: ezutil.MapSlice(response, mapFunc)}, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package helper
+
+import (
+        "github.com/google/uuid"
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/entity"
+        "github.com/shopspring/decimal"
+)
+
+func GetDebtAmounts(userProfileID, friendProfileID uuid.UUID, transactions []entity.DebtTransaction) (userOwes, friendOwes decimal.Decimal) <span class="cov0" title="0">{
+        userOwes, friendOwes = decimal.Zero, decimal.Zero
+
+        for _, transaction := range transactions </span><span class="cov0" title="0">{
+                if transaction.LenderProfileID == userProfileID &amp;&amp; transaction.BorrowerProfileID == friendProfileID </span><span class="cov0" title="0">{
+                        // User lent money to friend
+                        switch transaction.Type </span>{
+                        case appconstant.Lend:<span class="cov0" title="0">
+                                friendOwes = friendOwes.Add(transaction.Amount)</span> // Friend owes more
+                        case appconstant.Repay:<span class="cov0" title="0">
+                                friendOwes = friendOwes.Sub(transaction.Amount)</span> // Friend owes less
+                        }
+                } else<span class="cov0" title="0"> if transaction.LenderProfileID == friendProfileID &amp;&amp; transaction.BorrowerProfileID == userProfileID </span><span class="cov0" title="0">{
+                        // Friend lent money to user
+                        switch transaction.Type </span>{
+                        case appconstant.Lend:<span class="cov0" title="0">
+                                userOwes = userOwes.Add(transaction.Amount)</span> // User owes more
+                        case appconstant.Repay:<span class="cov0" title="0">
+                                userOwes = userOwes.Sub(transaction.Amount)</span> // User owes less
+                        }
+                }
+        }
+
+        // Ensure no negative debts
+        <span class="cov0" title="0">if userOwes.IsNegative() </span><span class="cov0" title="0">{
+                userOwes = decimal.Zero
+        }</span>
+        <span class="cov0" title="0">if friendOwes.IsNegative() </span><span class="cov0" title="0">{
+                friendOwes = decimal.Zero
+        }</span>
+
+        <span class="cov0" title="0">return userOwes, friendOwes</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package mapper
+
+import (
+        "fmt"
+
+        "github.com/google/uuid"
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/entity"
+)
+
+func DebtTransactionToResponse(userProfileID uuid.UUID, transaction entity.DebtTransaction) dto.DebtTransactionResponse <span class="cov0" title="0">{
+        var profileID uuid.UUID
+        if userProfileID == transaction.BorrowerProfileID &amp;&amp; userProfileID != transaction.LenderProfileID </span><span class="cov0" title="0">{
+                profileID = transaction.LenderProfileID
+        }</span> else<span class="cov0" title="0"> if userProfileID == transaction.LenderProfileID &amp;&amp; userProfileID != transaction.BorrowerProfileID </span><span class="cov0" title="0">{
+                profileID = transaction.BorrowerProfileID
+        }</span>
+
+        <span class="cov0" title="0">return dto.DebtTransactionResponse{
+                ID:             transaction.ID,
+                ProfileID:      profileID,
+                Type:           transaction.Type,
+                Action:         transaction.Action,
+                Amount:         transaction.Amount,
+                TransferMethod: transaction.TransferMethod.Display,
+                Description:    transaction.Description,
+                CreatedAt:      transaction.CreatedAt,
+                UpdatedAt:      transaction.UpdatedAt,
+                DeletedAt:      transaction.DeletedAt.Time,
+        }</span>
+}
+
+func GroupExpenseToDebtTransactions(groupExpense dto.GroupExpenseData, transferMethodID uuid.UUID) []entity.DebtTransaction <span class="cov0" title="0">{
+        action := appconstant.BorrowAction
+        if groupExpense.PayerProfileID == groupExpense.CreatorProfileID </span><span class="cov0" title="0">{
+                action = appconstant.LendAction
+        }</span>
+
+        <span class="cov0" title="0">debtTransactions := make([]entity.DebtTransaction, 0, len(groupExpense.Participants))
+        for _, participant := range groupExpense.Participants </span><span class="cov0" title="0">{
+                if groupExpense.PayerProfileID == participant.ProfileID </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">debtTransactions = append(debtTransactions, entity.DebtTransaction{
+                        LenderProfileID:   groupExpense.PayerProfileID,
+                        BorrowerProfileID: participant.ProfileID,
+                        Type:              appconstant.Lend,
+                        Action:            action,
+                        Amount:            participant.ShareAmount,
+                        TransferMethodID:  transferMethodID,
+                        Description:       fmt.Sprintf("Share for group expense %s: %s", groupExpense.ID, groupExpense.Description),
+                })</span>
+        }
+
+        <span class="cov0" title="0">return debtTransactions</span>
+}
+
+func GetDebtTransactionSimpleMapper(userProfileID uuid.UUID) func(entity.DebtTransaction) dto.DebtTransactionResponse <span class="cov0" title="0">{
+        return func(transaction entity.DebtTransaction) dto.DebtTransactionResponse </span><span class="cov0" title="0">{
+                return DebtTransactionToResponse(userProfileID, transaction)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package mapper
+
+import (
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/entity"
+)
+
+func TransferMethodToResponse(transferMethod entity.TransferMethod) dto.TransferMethodResponse <span class="cov0" title="0">{
+        return dto.TransferMethodResponse{
+                ID:        transferMethod.ID,
+                Name:      transferMethod.Name,
+                Display:   transferMethod.Display,
+                CreatedAt: transferMethod.CreatedAt,
+                UpdatedAt: transferMethod.UpdatedAt,
+                DeletedAt: transferMethod.DeletedAt.Time,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package provider
+
+import (
+        "fmt"
+
+        "github.com/itsLeonB/drex/internal/config"
+        "gorm.io/driver/postgres"
+        "gorm.io/gorm"
+)
+
+type DBs struct {
+        dbConfig config.DB
+        GormDB   *gorm.DB
+}
+
+func ProvideDBs(dbConfig config.DB) *DBs <span class="cov0" title="0">{
+        dbs := &amp;DBs{dbConfig, nil}
+        dbs.openGormConnection()
+
+        return dbs
+}</span>
+
+func (d *DBs) Shutdown() error <span class="cov0" title="0">{
+        db, err := d.GormDB.DB()
+        if db == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return db.Close()</span>
+}
+
+func (d *DBs) getDSN() string <span class="cov0" title="0">{
+        switch d.dbConfig.Driver </span>{
+        case "mysql":<span class="cov0" title="0">
+                return fmt.Sprintf(
+                        "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&amp;parseTime=True&amp;loc=Local",
+                        d.dbConfig.User,
+                        d.dbConfig.Password,
+                        d.dbConfig.Host,
+                        d.dbConfig.Port,
+                        d.dbConfig.Name,
+                )</span>
+        case "postgres":<span class="cov0" title="0">
+                return fmt.Sprintf(
+                        "host=%s user=%s password=%s dbname=%s port=%s",
+                        d.dbConfig.Host,
+                        d.dbConfig.User,
+                        d.dbConfig.Password,
+                        d.dbConfig.Name,
+                        d.dbConfig.Port,
+                )</span>
+        default:<span class="cov0" title="0">
+                panic(fmt.Sprintf("unsupported SQLDB driver: %s", d.dbConfig.Driver))</span>
+        }
+}
+
+func (d *DBs) getGormDialector() gorm.Dialector <span class="cov0" title="0">{
+        switch d.dbConfig.Driver </span>{
+        // case "mysql":
+        //         return mysql.Open(sqldb.getDSN())
+        case "postgres":<span class="cov0" title="0">
+                return postgres.Open(d.getDSN())</span>
+        default:<span class="cov0" title="0">
+                panic(fmt.Sprintf("unsupported SQLDB driver: %s", d.dbConfig.Driver))</span>
+        }
+}
+
+func (d *DBs) openGormConnection() <span class="cov0" title="0">{
+        db, err := gorm.Open(d.getGormDialector(), &amp;gorm.Config{})
+        if err != nil </span><span class="cov0" title="0">{
+                panic(fmt.Sprintf("error opening GORM connection: %s", err.Error()))</span>
+        }
+
+        <span class="cov0" title="0">d.GormDB = db</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package provider
+
+import (
+        "github.com/itsLeonB/drex/internal/config"
+        "github.com/itsLeonB/ezutil/v2"
+)
+
+func ProvideLogger(configs config.App) ezutil.Logger <span class="cov0" title="0">{
+        minLevel := 0
+        if configs.Env == "release" </span><span class="cov0" title="0">{
+                minLevel = 1
+        }</span>
+
+        <span class="cov0" title="0">return ezutil.NewSimpleLogger(configs.Name, true, minLevel)</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package provider
+
+import (
+        "errors"
+
+        "github.com/itsLeonB/drex/internal/config"
+        "github.com/itsLeonB/ezutil/v2"
+)
+
+type Provider struct {
+        Logger ezutil.Logger
+        *DBs
+        *Repositories
+        *Services
+}
+
+func All(configs config.Config) *Provider <span class="cov0" title="0">{
+        dbs := ProvideDBs(configs.DB)
+        repos := ProvideRepositories(dbs.GormDB)
+
+        return &amp;Provider{
+                Logger:       ProvideLogger(configs.App),
+                DBs:          dbs,
+                Repositories: repos,
+                Services:     ProvideServices(repos),
+        }
+}</span>
+
+func (p *Provider) Shutdown() error <span class="cov0" title="0">{
+        var err error
+        if p.DBs != nil </span><span class="cov0" title="0">{
+                if e := p.DBs.Shutdown(); e != nil </span><span class="cov0" title="0">{
+                        err = errors.Join(err, e)
+                }</span>
+        }
+        <span class="cov0" title="0">return err</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package provider
+
+import (
+        "github.com/itsLeonB/drex/internal/entity"
+        "github.com/itsLeonB/drex/internal/repository"
+        "github.com/itsLeonB/go-crud"
+        "gorm.io/gorm"
+)
+
+type Repositories struct {
+        Transactor      crud.Transactor
+        DebtTransaction repository.DebtTransactionRepository
+        TransferMethod  repository.TransferMethodRepository
+}
+
+func ProvideRepositories(gormDB *gorm.DB) *Repositories <span class="cov0" title="0">{
+        if gormDB == nil </span><span class="cov0" title="0">{
+                panic("gormDB cannot be nil")</span>
+        }
+
+        <span class="cov0" title="0">return &amp;Repositories{
+                Transactor:      crud.NewTransactor(gormDB),
+                DebtTransaction: repository.NewDebtTransactionRepository(gormDB),
+                TransferMethod:  crud.NewCRUDRepository[entity.TransferMethod](gormDB),
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package provider
+
+import (
+        "github.com/itsLeonB/drex/internal/service"
+)
+
+type Services struct {
+        TransferMethod  service.TransferMethodService
+        DebtTransaction service.DebtTransactionService
+}
+
+func ProvideServices(repositories *Repositories) *Services <span class="cov0" title="0">{
+        if repositories == nil </span><span class="cov0" title="0">{
+                panic("repositories cannot be nil")</span>
+        }
+
+        <span class="cov0" title="0">transferMethodService := service.NewTransferMethodService(repositories.TransferMethod)
+
+        debtTransactionService := service.NewDebtTransactionService(
+                repositories.Transactor,
+                repositories.DebtTransaction,
+                transferMethodService,
+        )
+
+        return &amp;Services{
+                TransferMethod:  transferMethodService,
+                DebtTransaction: debtTransactionService,
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package repository
+
+import (
+        "context"
+
+        "github.com/google/uuid"
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/entity"
+        "github.com/itsLeonB/go-crud"
+        "github.com/rotisserie/eris"
+        "gorm.io/gorm"
+)
+
+type debtTransactionRepositoryGorm struct {
+        crud.CRUDRepository[entity.DebtTransaction]
+        db *gorm.DB
+}
+
+func NewDebtTransactionRepository(db *gorm.DB) DebtTransactionRepository <span class="cov0" title="0">{
+        return &amp;debtTransactionRepositoryGorm{
+                crud.NewCRUDRepository[entity.DebtTransaction](db),
+                db,
+        }
+}</span>
+
+func (dtr *debtTransactionRepositoryGorm) FindAllByProfileIDs(ctx context.Context, userProfileID, friendProfileID uuid.UUID) ([]entity.DebtTransaction, error) <span class="cov0" title="0">{
+        var transactions []entity.DebtTransaction
+
+        db, err := dtr.GetGormInstance(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">err = db.
+                Scopes(crud.ForUpdate(true)).
+                Where("lender_profile_id = ? AND borrower_profile_id = ?", userProfileID, friendProfileID).
+                Or("lender_profile_id = ? AND borrower_profile_id = ?", friendProfileID, userProfileID).
+                Find(&amp;transactions).
+                Error
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, eris.Wrap(err, appconstant.ErrDataSelect)
+        }</span>
+
+        <span class="cov0" title="0">return transactions, nil</span>
+}
+
+func (dtr *debtTransactionRepositoryGorm) FindAllByUserProfileID(ctx context.Context, userProfileID uuid.UUID) ([]entity.DebtTransaction, error) <span class="cov0" title="0">{
+        var transactions []entity.DebtTransaction
+
+        db, err := dtr.GetGormInstance(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">err = db.
+                Where("lender_profile_id = ?", userProfileID).
+                Or("borrower_profile_id = ?", userProfileID).
+                Preload("TransferMethod").
+                Scopes(crud.DefaultOrder()).
+                Find(&amp;transactions).
+                Error
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, eris.Wrap(err, appconstant.ErrDataSelect)
+        }</span>
+
+        <span class="cov0" title="0">return transactions, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package debt
+
+import (
+        "fmt"
+
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/entity"
+)
+
+type AnonymousDebtCalculator interface {
+        GetAction() appconstant.DebtTransactionAction
+        MapRequestToEntity(request dto.NewDebtTransactionRequest) entity.DebtTransaction
+        MapEntityToResponse(debtTransaction entity.DebtTransaction) dto.DebtTransactionResponse
+        Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error
+}
+
+var initFuncs = []func() AnonymousDebtCalculator{
+        newBorrowingAnonDebtCalculator,
+        newLendingAnonDebtCalculator,
+        newReceivingAnonDebtCalculator,
+        newReturningAnonDebtCalculator,
+}
+
+func NewAnonymousDebtCalculatorStrategies() map[appconstant.DebtTransactionAction]AnonymousDebtCalculator <span class="cov0" title="0">{
+        strategyMap := make(map[appconstant.DebtTransactionAction]AnonymousDebtCalculator)
+
+        for _, initFunc := range initFuncs </span><span class="cov0" title="0">{
+                if initFunc == nil </span><span class="cov0" title="0">{
+                        panic("initFunc is nil")</span>
+                }
+
+                <span class="cov0" title="0">calculator := initFunc()
+                if calculator == nil </span><span class="cov0" title="0">{
+                        panic("calculator is nil")</span>
+                }
+
+                <span class="cov0" title="0">action := calculator.GetAction()
+                if _, exists := strategyMap[action]; exists </span><span class="cov0" title="0">{
+                        panic(fmt.Sprintf("duplicate calculator for action: %s", action))</span>
+                }
+
+                <span class="cov0" title="0">strategyMap[calculator.GetAction()] = calculator</span>
+        }
+
+        <span class="cov0" title="0">return strategyMap</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package debt
+
+import (
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/entity"
+)
+
+type borrowingAnonDebtCalculator struct {
+        action appconstant.DebtTransactionAction
+}
+
+func newBorrowingAnonDebtCalculator() AnonymousDebtCalculator <span class="cov0" title="0">{
+        return &amp;borrowingAnonDebtCalculator{
+                action: appconstant.BorrowAction,
+        }
+}</span>
+
+func (dc *borrowingAnonDebtCalculator) GetAction() appconstant.DebtTransactionAction <span class="cov0" title="0">{
+        return dc.action
+}</span>
+
+func (dc *borrowingAnonDebtCalculator) MapRequestToEntity(request dto.NewDebtTransactionRequest) entity.DebtTransaction <span class="cov0" title="0">{
+        return entity.DebtTransaction{
+                LenderProfileID:   request.FriendProfileID,
+                BorrowerProfileID: request.UserProfileID,
+                Type:              appconstant.Lend,
+                Action:            dc.action,
+                Amount:            request.Amount,
+                TransferMethodID:  request.TransferMethodID,
+                Description:       request.Description,
+        }
+}</span>
+
+func (dc *borrowingAnonDebtCalculator) MapEntityToResponse(debtTransaction entity.DebtTransaction) dto.DebtTransactionResponse <span class="cov0" title="0">{
+        return dto.DebtTransactionResponse{
+                ID:             debtTransaction.ID,
+                ProfileID:      debtTransaction.LenderProfileID,
+                Type:           debtTransaction.Type,
+                Action:         debtTransaction.Action,
+                Amount:         debtTransaction.Amount,
+                TransferMethod: debtTransaction.TransferMethod.Display,
+                Description:    debtTransaction.Description,
+                CreatedAt:      debtTransaction.CreatedAt,
+                UpdatedAt:      debtTransaction.UpdatedAt,
+                DeletedAt:      debtTransaction.DeletedAt.Time,
+        }
+}</span>
+
+func (dc *borrowingAnonDebtCalculator) Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error <span class="cov0" title="0">{
+        // Currently does not validate stuff
+        // User can record borrow of any amount for anonymous friend
+        return nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package debt
+
+import (
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/entity"
+)
+
+type lendingAnonDebtCalculator struct {
+        action appconstant.DebtTransactionAction
+}
+
+func newLendingAnonDebtCalculator() AnonymousDebtCalculator <span class="cov0" title="0">{
+        return &amp;lendingAnonDebtCalculator{
+                action: appconstant.LendAction,
+        }
+}</span>
+
+func (dc *lendingAnonDebtCalculator) GetAction() appconstant.DebtTransactionAction <span class="cov0" title="0">{
+        return dc.action
+}</span>
+
+func (dc *lendingAnonDebtCalculator) MapRequestToEntity(request dto.NewDebtTransactionRequest) entity.DebtTransaction <span class="cov0" title="0">{
+        return entity.DebtTransaction{
+                LenderProfileID:   request.UserProfileID,
+                BorrowerProfileID: request.FriendProfileID,
+                Type:              appconstant.Lend,
+                Action:            dc.action,
+                Amount:            request.Amount,
+                TransferMethodID:  request.TransferMethodID,
+                Description:       request.Description,
+        }
+}</span>
+
+func (dc *lendingAnonDebtCalculator) MapEntityToResponse(debtTransaction entity.DebtTransaction) dto.DebtTransactionResponse <span class="cov0" title="0">{
+        return dto.DebtTransactionResponse{
+                ID:             debtTransaction.ID,
+                ProfileID:      debtTransaction.BorrowerProfileID,
+                Type:           debtTransaction.Type,
+                Action:         debtTransaction.Action,
+                Amount:         debtTransaction.Amount,
+                TransferMethod: debtTransaction.TransferMethod.Display,
+                Description:    debtTransaction.Description,
+                CreatedAt:      debtTransaction.CreatedAt,
+                UpdatedAt:      debtTransaction.UpdatedAt,
+                DeletedAt:      debtTransaction.DeletedAt.Time,
+        }
+}</span>
+
+func (dc *lendingAnonDebtCalculator) Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error <span class="cov0" title="0">{
+        // Currently does not validate stuff
+        // User can record lend of any amount for anonymous friend
+        return nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package debt
+
+import (
+        "fmt"
+
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/entity"
+        "github.com/itsLeonB/drex/internal/helper"
+        "github.com/itsLeonB/ungerr"
+)
+
+type receivingAnonDebtCalculator struct {
+        action appconstant.DebtTransactionAction
+}
+
+func newReceivingAnonDebtCalculator() AnonymousDebtCalculator <span class="cov0" title="0">{
+        return &amp;receivingAnonDebtCalculator{
+                action: appconstant.ReceiveAction,
+        }
+}</span>
+
+func (dc *receivingAnonDebtCalculator) GetAction() appconstant.DebtTransactionAction <span class="cov0" title="0">{
+        return dc.action
+}</span>
+
+func (dc *receivingAnonDebtCalculator) MapRequestToEntity(request dto.NewDebtTransactionRequest) entity.DebtTransaction <span class="cov0" title="0">{
+        return entity.DebtTransaction{
+                LenderProfileID:   request.UserProfileID,
+                BorrowerProfileID: request.FriendProfileID,
+                Type:              appconstant.Repay,
+                Action:            dc.action,
+                Amount:            request.Amount,
+                TransferMethodID:  request.TransferMethodID,
+                Description:       request.Description,
+        }
+}</span>
+
+func (dc *receivingAnonDebtCalculator) MapEntityToResponse(debtTransaction entity.DebtTransaction) dto.DebtTransactionResponse <span class="cov0" title="0">{
+        return dto.DebtTransactionResponse{
+                ID:             debtTransaction.ID,
+                ProfileID:      debtTransaction.BorrowerProfileID,
+                Type:           debtTransaction.Type,
+                Action:         debtTransaction.Action,
+                Amount:         debtTransaction.Amount,
+                TransferMethod: debtTransaction.TransferMethod.Display,
+                Description:    debtTransaction.Description,
+                CreatedAt:      debtTransaction.CreatedAt,
+                UpdatedAt:      debtTransaction.UpdatedAt,
+                DeletedAt:      debtTransaction.DeletedAt.Time,
+        }
+}</span>
+
+func (dc *receivingAnonDebtCalculator) Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error <span class="cov0" title="0">{
+        _, friendOwes := helper.GetDebtAmounts(
+                newTransaction.LenderProfileID,
+                newTransaction.BorrowerProfileID,
+                allTransactions,
+        )
+
+        // For RECEIVE action, we only care about how much the friend owes to the user
+        // The user can only receive up to what the friend owes them
+        if friendOwes.IsZero() </span><span class="cov0" title="0">{
+                return ungerr.ValidationError("cannot receive debt, friend doesn't owe you any money")
+        }</span>
+
+        <span class="cov0" title="0">if newTransaction.Amount.GreaterThan(friendOwes) </span><span class="cov0" title="0">{
+                return ungerr.ValidationError(fmt.Sprintf(
+                        "cannot receive debt, you can only receive up to %s (friend currently owes you %s)",
+                        friendOwes.String(),
+                        friendOwes.String(),
+                ))
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package debt
+
+import (
+        "fmt"
+
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/entity"
+        "github.com/itsLeonB/drex/internal/helper"
+        "github.com/itsLeonB/ungerr"
+)
+
+type returningAnonDebtCalculator struct {
+        action appconstant.DebtTransactionAction
+}
+
+func newReturningAnonDebtCalculator() AnonymousDebtCalculator <span class="cov0" title="0">{
+        return &amp;returningAnonDebtCalculator{
+                action: appconstant.ReturnAction,
+        }
+}</span>
+
+func (dc *returningAnonDebtCalculator) GetAction() appconstant.DebtTransactionAction <span class="cov0" title="0">{
+        return dc.action
+}</span>
+
+func (dc *returningAnonDebtCalculator) MapRequestToEntity(request dto.NewDebtTransactionRequest) entity.DebtTransaction <span class="cov0" title="0">{
+        return entity.DebtTransaction{
+                LenderProfileID:   request.FriendProfileID,
+                BorrowerProfileID: request.UserProfileID,
+                Action:            dc.action,
+                Type:              appconstant.Repay,
+                Amount:            request.Amount,
+                TransferMethodID:  request.TransferMethodID,
+                Description:       request.Description,
+        }
+}</span>
+
+func (dc *returningAnonDebtCalculator) MapEntityToResponse(debtTransaction entity.DebtTransaction) dto.DebtTransactionResponse <span class="cov0" title="0">{
+        return dto.DebtTransactionResponse{
+                ID:             debtTransaction.ID,
+                ProfileID:      debtTransaction.LenderProfileID,
+                Type:           debtTransaction.Type,
+                Action:         debtTransaction.Action,
+                Amount:         debtTransaction.Amount,
+                TransferMethod: debtTransaction.TransferMethod.Display,
+                Description:    debtTransaction.Description,
+                CreatedAt:      debtTransaction.CreatedAt,
+                UpdatedAt:      debtTransaction.UpdatedAt,
+                DeletedAt:      debtTransaction.DeletedAt.Time,
+        }
+}</span>
+
+func (dc *returningAnonDebtCalculator) Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error <span class="cov0" title="0">{
+        userOwes, _ := helper.GetDebtAmounts(
+                newTransaction.BorrowerProfileID,
+                newTransaction.LenderProfileID,
+                allTransactions,
+        )
+
+        // For RETURN action, we only care about how much the user owes
+        // The user can only return up to what they owe
+        if userOwes.IsZero() </span><span class="cov0" title="0">{
+                return ungerr.ValidationError("cannot return debt, you don't owe any money")
+        }</span>
+
+        <span class="cov0" title="0">if newTransaction.Amount.GreaterThan(userOwes) </span><span class="cov0" title="0">{
+                return ungerr.ValidationError(fmt.Sprintf(
+                        "cannot return debt, you can only return up to %s (you currently owe %s)",
+                        userOwes.String(),
+                        userOwes.String(),
+                ))
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package service
+
+import (
+        "context"
+
+        "github.com/google/uuid"
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/mapper"
+        "github.com/itsLeonB/drex/internal/repository"
+        "github.com/itsLeonB/drex/internal/service/debt"
+        "github.com/itsLeonB/ezutil/v2"
+        crud "github.com/itsLeonB/go-crud"
+        "github.com/itsLeonB/ungerr"
+        "github.com/rotisserie/eris"
+        "github.com/shopspring/decimal"
+)
+
+type debtTransactionServiceImpl struct {
+        transactor                      crud.Transactor
+        anonymousDebtCalculatorStrategy map[appconstant.DebtTransactionAction]debt.AnonymousDebtCalculator
+        debtTransactionRepository       repository.DebtTransactionRepository
+        transferMethodService           TransferMethodService
+}
+
+func NewDebtTransactionService(
+        transactor crud.Transactor,
+        debtTransactionRepository repository.DebtTransactionRepository,
+        transferMethodService TransferMethodService,
+) DebtTransactionService <span class="cov0" title="0">{
+        return &amp;debtTransactionServiceImpl{
+                transactor,
+                debt.NewAnonymousDebtCalculatorStrategies(),
+                debtTransactionRepository,
+                transferMethodService,
+        }
+}</span>
+
+func (ds *debtTransactionServiceImpl) RecordNew(ctx context.Context, request dto.NewDebtTransactionRequest) (dto.DebtTransactionResponse, error) <span class="cov0" title="0">{
+        var response dto.DebtTransactionResponse
+
+        transferMethod, err := ds.transferMethodService.GetByID(ctx, request.TransferMethodID)
+        if err != nil </span><span class="cov0" title="0">{
+                return dto.DebtTransactionResponse{}, err
+        }</span>
+
+        <span class="cov0" title="0">if request.Amount.Compare(decimal.Zero) &lt; 1 </span><span class="cov0" title="0">{
+                return dto.DebtTransactionResponse{}, ungerr.ValidationError("amount must be greater than 0")
+        }</span>
+
+        <span class="cov0" title="0">err = ds.transactor.WithinTransaction(ctx, func(ctx context.Context) error </span><span class="cov0" title="0">{
+                debtTransactions, err := ds.debtTransactionRepository.FindAllByProfileIDs(ctx, request.UserProfileID, request.FriendProfileID)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">calculator, err := ds.selectAnonCalculator(request.Action)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">newDebt := calculator.MapRequestToEntity(request)
+
+                if err = calculator.Validate(newDebt, debtTransactions); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">insertedDebt, err := ds.debtTransactionRepository.Insert(ctx, newDebt)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">insertedDebt.TransferMethod = transferMethod
+
+                response = calculator.MapEntityToResponse(insertedDebt)
+
+                return nil</span>
+        })
+
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                return dto.DebtTransactionResponse{}, err
+        }</span>
+
+        <span class="cov0" title="0">return response, nil</span>
+}
+
+func (ds *debtTransactionServiceImpl) GetAll(ctx context.Context, profileID uuid.UUID) ([]dto.DebtTransactionResponse, error) <span class="cov0" title="0">{
+        transactions, err := ds.debtTransactionRepository.FindAllByUserProfileID(ctx, profileID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return ezutil.MapSlice(transactions, mapper.GetDebtTransactionSimpleMapper(profileID)), nil</span>
+}
+
+func (ds *debtTransactionServiceImpl) ProcessConfirmedGroupExpense(ctx context.Context, groupExpense dto.GroupExpenseData) error <span class="cov0" title="0">{
+        transferMethod, err := ds.transferMethodService.GetByName(ctx, appconstant.GroupExpenseTransferMethod)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">debtTransactions := mapper.GroupExpenseToDebtTransactions(groupExpense, transferMethod.ID)
+
+        _, err = ds.debtTransactionRepository.BatchInsert(ctx, debtTransactions)
+
+        return err</span>
+}
+
+func (ds *debtTransactionServiceImpl) FindAllByProfileIDs(ctx context.Context, userProfileID, friendProfileID uuid.UUID) ([]dto.DebtTransactionResponse, error) <span class="cov0" title="0">{
+        transactions, err := ds.debtTransactionRepository.FindAllByProfileIDs(ctx, userProfileID, friendProfileID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return ezutil.MapSlice(transactions, mapper.GetDebtTransactionSimpleMapper(userProfileID)), nil</span>
+}
+
+func (ds *debtTransactionServiceImpl) selectAnonCalculator(action appconstant.DebtTransactionAction) (debt.AnonymousDebtCalculator, error) <span class="cov0" title="0">{
+        calculator, ok := ds.anonymousDebtCalculatorStrategy[action]
+        if !ok </span><span class="cov0" title="0">{
+                return nil, eris.Errorf("unsupported anonymous debt calculator action: %s", action)
+        }</span>
+
+        <span class="cov0" title="0">return calculator, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package service
+
+import (
+        "context"
+        "fmt"
+
+        "github.com/google/uuid"
+        "github.com/itsLeonB/drex/internal/appconstant"
+        "github.com/itsLeonB/drex/internal/dto"
+        "github.com/itsLeonB/drex/internal/entity"
+        "github.com/itsLeonB/drex/internal/mapper"
+        "github.com/itsLeonB/drex/internal/repository"
+        "github.com/itsLeonB/ezutil/v2"
+        "github.com/itsLeonB/go-crud"
+        "github.com/itsLeonB/ungerr"
+        "github.com/rotisserie/eris"
+)
+
+type transferMethodServiceImpl struct {
+        transferMethodRepository repository.TransferMethodRepository
+}
+
+func NewTransferMethodService(transferMethodRepository repository.TransferMethodRepository) TransferMethodService <span class="cov0" title="0">{
+        return &amp;transferMethodServiceImpl{transferMethodRepository}
+}</span>
+
+func (tms *transferMethodServiceImpl) GetAll(ctx context.Context) ([]dto.TransferMethodResponse, error) <span class="cov0" title="0">{
+        transferMethods, err := tms.transferMethodRepository.FindAll(ctx, crud.Specification[entity.TransferMethod]{})
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return ezutil.MapSlice(transferMethods, mapper.TransferMethodToResponse), nil</span>
+}
+
+func (tms *transferMethodServiceImpl) GetByID(ctx context.Context, id uuid.UUID) (entity.TransferMethod, error) <span class="cov0" title="0">{
+        spec := crud.Specification[entity.TransferMethod]{}
+        spec.Model.ID = id
+
+        transferMethod, err := tms.transferMethodRepository.FindFirst(ctx, spec)
+        if err != nil </span><span class="cov0" title="0">{
+                return entity.TransferMethod{}, err
+        }</span>
+
+        <span class="cov0" title="0">if transferMethod.IsZero() </span><span class="cov0" title="0">{
+                return entity.TransferMethod{}, ungerr.NotFoundError(fmt.Sprintf(appconstant.ErrTransferMethodNotFound, id))
+        }</span>
+
+        <span class="cov0" title="0">if transferMethod.IsDeleted() </span><span class="cov0" title="0">{
+                return entity.TransferMethod{}, ungerr.UnprocessableEntityError(fmt.Sprintf(appconstant.ErrTransferMethodDeleted, id))
+        }</span>
+
+        <span class="cov0" title="0">return transferMethod, nil</span>
+}
+
+func (tms *transferMethodServiceImpl) GetByName(ctx context.Context, name string) (entity.TransferMethod, error) <span class="cov0" title="0">{
+        spec := crud.Specification[entity.TransferMethod]{}
+        spec.Model.Name = name
+
+        transferMethod, err := tms.transferMethodRepository.FindFirst(ctx, spec)
+        if err != nil </span><span class="cov0" title="0">{
+                return entity.TransferMethod{}, err
+        }</span>
+
+        <span class="cov0" title="0">if transferMethod.IsZero() </span><span class="cov0" title="0">{
+                return entity.TransferMethod{}, eris.Errorf("%s transfer method not found", name)
+        }</span>
+
+        <span class="cov0" title="0">if transferMethod.IsDeleted() </span><span class="cov0" title="0">{
+                return entity.TransferMethod{}, eris.Errorf("%s transfer method is deleted", name)
+        }</span>
+
+        <span class="cov0" title="0">return transferMethod, nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
