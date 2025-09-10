@@ -11,120 +11,100 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAmountSumsFromDebtTransactions(t *testing.T) {
+func TestGetDebtAmounts_UserLendsToFriend(t *testing.T) {
 	userID := uuid.New()
 	friendID := uuid.New()
-	otherID := uuid.New()
 
-	tests := []struct {
-		name         string
-		transactions []entity.DebtTransaction
-		wantUser     decimal.Decimal
-		wantFriend   decimal.Decimal
-	}{
+	transactions := []entity.DebtTransaction{
 		{
-			name:         "Empty transactions",
-			transactions: []entity.DebtTransaction{},
-			wantUser:     decimal.Zero,
-			wantFriend:   decimal.Zero,
-		},
-		{
-			name: "Unrelated transactions",
-			transactions: []entity.DebtTransaction{
-				{
-					LenderProfileID:   otherID,
-					BorrowerProfileID: otherID,
-					Type:              appconstant.Lend,
-					Amount:            decimal.NewFromInt(100),
-				},
-			},
-			wantUser:   decimal.Zero,
-			wantFriend: decimal.Zero,
-		},
-		{
-			name: "User lends to friend and gets repaid",
-			transactions: []entity.DebtTransaction{
-				{
-					LenderProfileID:   userID,
-					BorrowerProfileID: friendID,
-					Type:              appconstant.Lend,
-					Amount:            decimal.NewFromInt(100),
-				},
-				{
-					LenderProfileID:   userID,
-					BorrowerProfileID: friendID,
-					Type:              appconstant.Repay,
-					Amount:            decimal.NewFromInt(50),
-				},
-			},
-			wantUser:   decimal.NewFromInt(-50),
-			wantFriend: decimal.NewFromInt(50),
-		},
-		{
-			name: "Friend lends to user and gets repaid",
-			transactions: []entity.DebtTransaction{
-				{
-					LenderProfileID:   friendID,
-					BorrowerProfileID: userID,
-					Type:              appconstant.Lend,
-					Amount:            decimal.NewFromInt(70),
-				},
-				{
-					LenderProfileID:   friendID,
-					BorrowerProfileID: userID,
-					Type:              appconstant.Repay,
-					Amount:            decimal.NewFromInt(30),
-				},
-			},
-			wantUser:   decimal.NewFromInt(40),
-			wantFriend: decimal.NewFromInt(-40),
-		},
-		{
-			name: "All Lend transactions",
-			transactions: []entity.DebtTransaction{
-				{
-					LenderProfileID:   userID,
-					BorrowerProfileID: friendID,
-					Type:              appconstant.Lend,
-					Amount:            decimal.NewFromInt(20),
-				},
-				{
-					LenderProfileID:   friendID,
-					BorrowerProfileID: userID,
-					Type:              appconstant.Lend,
-					Amount:            decimal.NewFromInt(40),
-				},
-			},
-			wantUser:   decimal.NewFromInt(20),
-			wantFriend: decimal.NewFromInt(-20),
-		},
-		{
-			name: "All Repay transactions",
-			transactions: []entity.DebtTransaction{
-				{
-					LenderProfileID:   userID,
-					BorrowerProfileID: friendID,
-					Type:              appconstant.Repay,
-					Amount:            decimal.NewFromInt(25),
-				},
-				{
-					LenderProfileID:   friendID,
-					BorrowerProfileID: userID,
-					Type:              appconstant.Repay,
-					Amount:            decimal.NewFromInt(35),
-				},
-			},
-			wantUser:   decimal.NewFromInt(-10),
-			wantFriend: decimal.NewFromInt(10),
+			LenderProfileID:   userID,
+			BorrowerProfileID: friendID,
+			Type:              appconstant.Lend,
+			Amount:            decimal.NewFromFloat(100),
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			gotUser, gotFriend := helper.GetAmountSumsFromDebtTransactions(userID, friendID, tt.transactions)
+	userOwes, friendOwes := helper.GetDebtAmounts(userID, friendID, transactions)
 
-			assert.True(t, gotUser.Equal(tt.wantUser), "UserAmount mismatch: got %v want %v", gotUser, tt.wantUser)
-			assert.True(t, gotFriend.Equal(tt.wantFriend), "FriendAmount mismatch: got %v want %v", gotFriend, tt.wantFriend)
-		})
+	assert.True(t, userOwes.IsZero())
+	assert.True(t, friendOwes.Equal(decimal.NewFromFloat(100)))
+}
+
+func TestGetDebtAmounts_FriendLendsToUser(t *testing.T) {
+	userID := uuid.New()
+	friendID := uuid.New()
+
+	transactions := []entity.DebtTransaction{
+		{
+			LenderProfileID:   friendID,
+			BorrowerProfileID: userID,
+			Type:              appconstant.Lend,
+			Amount:            decimal.NewFromFloat(50),
+		},
 	}
+
+	userOwes, friendOwes := helper.GetDebtAmounts(userID, friendID, transactions)
+
+	assert.True(t, userOwes.Equal(decimal.NewFromFloat(50)))
+	assert.True(t, friendOwes.IsZero())
+}
+
+func TestGetDebtAmounts_RepaymentReducesDebt(t *testing.T) {
+	userID := uuid.New()
+	friendID := uuid.New()
+
+	transactions := []entity.DebtTransaction{
+		{
+			LenderProfileID:   userID,
+			BorrowerProfileID: friendID,
+			Type:              appconstant.Lend,
+			Amount:            decimal.NewFromFloat(100),
+		},
+		{
+			LenderProfileID:   userID,
+			BorrowerProfileID: friendID,
+			Type:              appconstant.Repay,
+			Amount:            decimal.NewFromFloat(30),
+		},
+	}
+
+	userOwes, friendOwes := helper.GetDebtAmounts(userID, friendID, transactions)
+
+	assert.True(t, userOwes.IsZero())
+	assert.True(t, friendOwes.Equal(decimal.NewFromFloat(70)))
+}
+
+func TestGetDebtAmounts_NoNegativeDebts(t *testing.T) {
+	userID := uuid.New()
+	friendID := uuid.New()
+
+	transactions := []entity.DebtTransaction{
+		{
+			LenderProfileID:   userID,
+			BorrowerProfileID: friendID,
+			Type:              appconstant.Lend,
+			Amount:            decimal.NewFromFloat(50),
+		},
+		{
+			LenderProfileID:   userID,
+			BorrowerProfileID: friendID,
+			Type:              appconstant.Repay,
+			Amount:            decimal.NewFromFloat(100),
+		},
+	}
+
+	userOwes, friendOwes := helper.GetDebtAmounts(userID, friendID, transactions)
+
+	assert.True(t, userOwes.IsZero())
+	assert.True(t, friendOwes.IsZero())
+}
+
+func TestGetDebtAmounts_EmptyTransactions(t *testing.T) {
+	userID := uuid.New()
+	friendID := uuid.New()
+
+	userOwes, friendOwes := helper.GetDebtAmounts(userID, friendID, []entity.DebtTransaction{})
+
+	assert.True(t, userOwes.IsZero())
+	assert.True(t, friendOwes.IsZero())
 }

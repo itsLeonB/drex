@@ -15,7 +15,7 @@ WORKDIR /
 
 COPY --from=build-stage /drex /drex
 
-EXPOSE 8080
+EXPOSE 50052
 
 USER nonroot:nonroot
 
