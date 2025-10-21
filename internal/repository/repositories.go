@@ -9,11 +9,11 @@ import (
 )
 
 type DebtTransactionRepository interface {
-	crud.CRUDRepository[entity.DebtTransaction]
+	crud.Repository[entity.DebtTransaction]
 	FindAllByProfileIDs(ctx context.Context, userProfileID, friendProfileID uuid.UUID) ([]entity.DebtTransaction, error)
 	FindAllByUserProfileID(ctx context.Context, userProfileID uuid.UUID) ([]entity.DebtTransaction, error)
 }
 
 type TransferMethodRepository interface {
-	crud.CRUDRepository[entity.TransferMethod]
+	crud.Repository[entity.TransferMethod]
 }

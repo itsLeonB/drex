@@ -12,13 +12,13 @@ import (
 )
 
 type debtTransactionRepositoryGorm struct {
-	crud.CRUDRepository[entity.DebtTransaction]
+	crud.Repository[entity.DebtTransaction]
 	db *gorm.DB
 }
 
 func NewDebtTransactionRepository(db *gorm.DB) DebtTransactionRepository {
 	return &debtTransactionRepositoryGorm{
-		crud.NewCRUDRepository[entity.DebtTransaction](db),
+		crud.NewRepository[entity.DebtTransaction](db),
 		db,
 	}
 }
