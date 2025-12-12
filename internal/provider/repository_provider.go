@@ -8,7 +8,6 @@ import (
 )
 
 type Repositories struct {
-	Transactor      crud.Transactor
 	DebtTransaction repository.DebtTransactionRepository
 	TransferMethod  repository.TransferMethodRepository
 }
@@ -19,8 +18,7 @@ func ProvideRepositories(gormDB *gorm.DB) *Repositories {
 	}
 
 	return &Repositories{
-		Transactor:      crud.NewTransactor(gormDB),
 		DebtTransaction: repository.NewDebtTransactionRepository(gormDB),
-		TransferMethod:  crud.NewCRUDRepository[entity.TransferMethod](gormDB),
+		TransferMethod:  crud.NewRepository[entity.TransferMethod](gormDB),
 	}
 }

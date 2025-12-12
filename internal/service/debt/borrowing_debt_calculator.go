@@ -6,24 +6,24 @@ import (
 	"github.com/itsLeonB/drex/internal/entity"
 )
 
-type lendingAnonDebtCalculator struct {
+type borrowingDebtCalculator struct {
 	action appconstant.DebtTransactionAction
 }
 
-func newLendingAnonDebtCalculator() AnonymousDebtCalculator {
-	return &lendingAnonDebtCalculator{
-		action: appconstant.LendAction,
+func newBorrowingDebtCalculator() DebtCalculator {
+	return &borrowingDebtCalculator{
+		action: appconstant.BorrowAction,
 	}
 }
 
-func (dc *lendingAnonDebtCalculator) GetAction() appconstant.DebtTransactionAction {
+func (dc *borrowingDebtCalculator) GetAction() appconstant.DebtTransactionAction {
 	return dc.action
 }
 
-func (dc *lendingAnonDebtCalculator) MapRequestToEntity(request dto.NewDebtTransactionRequest) entity.DebtTransaction {
+func (dc *borrowingDebtCalculator) MapRequestToEntity(request dto.NewDebtTransactionRequest) entity.DebtTransaction {
 	return entity.DebtTransaction{
-		LenderProfileID:   request.UserProfileID,
-		BorrowerProfileID: request.FriendProfileID,
+		LenderProfileID:   request.FriendProfileID,
+		BorrowerProfileID: request.UserProfileID,
 		Type:              appconstant.Lend,
 		Action:            dc.action,
 		Amount:            request.Amount,
@@ -32,10 +32,10 @@ func (dc *lendingAnonDebtCalculator) MapRequestToEntity(request dto.NewDebtTrans
 	}
 }
 
-func (dc *lendingAnonDebtCalculator) MapEntityToResponse(debtTransaction entity.DebtTransaction) dto.DebtTransactionResponse {
+func (dc *borrowingDebtCalculator) MapEntityToResponse(debtTransaction entity.DebtTransaction) dto.DebtTransactionResponse {
 	return dto.DebtTransactionResponse{
 		ID:             debtTransaction.ID,
-		ProfileID:      debtTransaction.BorrowerProfileID,
+		ProfileID:      debtTransaction.LenderProfileID,
 		Type:           debtTransaction.Type,
 		Action:         debtTransaction.Action,
 		Amount:         debtTransaction.Amount,
@@ -45,10 +45,4 @@ func (dc *lendingAnonDebtCalculator) MapEntityToResponse(debtTransaction entity.
 		UpdatedAt:      debtTransaction.UpdatedAt,
 		DeletedAt:      debtTransaction.DeletedAt.Time,
 	}
-}
-
-func (dc *lendingAnonDebtCalculator) Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error {
-	// Currently does not validate stuff
-	// User can record lend of any amount for anonymous friend
-	return nil
 }

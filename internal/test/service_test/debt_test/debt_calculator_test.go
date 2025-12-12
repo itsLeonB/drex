@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAnonymousDebtCalculatorStrategies(t *testing.T) {
-	calculators := debt.NewAnonymousDebtCalculatorStrategies()
+func TestDebtCalculatorStrategies(t *testing.T) {
+	calculators := debt.NewDebtCalculatorStrategies()
 	userProfileID := uuid.New()
 	friendProfileID := uuid.New()
 
@@ -205,14 +205,6 @@ func TestAnonymousDebtCalculatorStrategies(t *testing.T) {
 			assert.Equal(t, tt.expectedEntity.Type, entityResult.Type, "Entity Type should match")
 			assert.True(t, tt.request.Amount.Compare(entityResult.Amount) == 0, "Amount should match")
 			assert.Equal(t, tt.request.Description, entityResult.Description, "Description should match")
-
-			// Validate
-			err := calculator.Validate(entityResult, tt.existingEntities)
-			if tt.expectedError {
-				assert.Error(t, err, "Expected validation error but got none")
-			} else {
-				assert.NoError(t, err, "Did not expect validation error but got one")
-			}
 
 			// MapEntityToResponse
 			entityResult.ID = uuid.New()

@@ -8,22 +8,21 @@ import (
 	"github.com/itsLeonB/drex/internal/entity"
 )
 
-type AnonymousDebtCalculator interface {
+type DebtCalculator interface {
 	GetAction() appconstant.DebtTransactionAction
 	MapRequestToEntity(request dto.NewDebtTransactionRequest) entity.DebtTransaction
 	MapEntityToResponse(debtTransaction entity.DebtTransaction) dto.DebtTransactionResponse
-	Validate(newTransaction entity.DebtTransaction, allTransactions []entity.DebtTransaction) error
 }
 
-var initFuncs = []func() AnonymousDebtCalculator{
-	newBorrowingAnonDebtCalculator,
-	newLendingAnonDebtCalculator,
-	newReceivingAnonDebtCalculator,
-	newReturningAnonDebtCalculator,
+var initFuncs = []func() DebtCalculator{
+	newBorrowingDebtCalculator,
+	newLendingDebtCalculator,
+	newReceivingDebtCalculator,
+	newReturningDebtCalculator,
 }
 
-func NewAnonymousDebtCalculatorStrategies() map[appconstant.DebtTransactionAction]AnonymousDebtCalculator {
-	strategyMap := make(map[appconstant.DebtTransactionAction]AnonymousDebtCalculator)
+func NewDebtCalculatorStrategies() map[appconstant.DebtTransactionAction]DebtCalculator {
+	strategyMap := make(map[appconstant.DebtTransactionAction]DebtCalculator)
 
 	for _, initFunc := range initFuncs {
 		if initFunc == nil {

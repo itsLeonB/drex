@@ -17,7 +17,6 @@ func ProvideServices(repositories *Repositories) *Services {
 	transferMethodService := service.NewTransferMethodService(repositories.TransferMethod)
 
 	debtTransactionService := service.NewDebtTransactionService(
-		repositories.Transactor,
 		repositories.DebtTransaction,
 		transferMethodService,
 	)
